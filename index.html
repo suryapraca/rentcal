@@ -37,7 +37,9 @@
         <div class="mb-3 text-light">
             <label for="carType" class="form-label">Pilih Mobil:</label>
             <select id="carType" class="form-select">
-                <option value="innova">Innova Reborn - Rp 450.000</option>
+                <option value="innovaReborn24">Innova Reborn Diesel 2400cc - Rp 400.000</option>
+                <option value="innovaZenix20">Innova Zenix Gasoline 2000cc - Rp 450.000</option>
+                <option value="hiacePremio28">Hiace Premio 2800cc - Rp 800.000</option>
             </select>
         </div>
 
@@ -80,6 +82,7 @@
             <strong>Durasi Sewa:</strong> <span id="rentalDurationResult"></span><br>
             <strong>Konsumsi BBM:</strong> <span id="fuelConsumptionResult"></span><br>
             <strong>Biaya BBM:</strong> <span id="fuelCostResult"></span><br>
+            <strong>Jenis Mobil:</strong> <span id="carTypeResult"></span><br>
             <strong>Biaya Sewa Mobil:</strong> <span id="carCostResult"></span><br>
             <strong>Biaya Driver:</strong> <span id="driverCostResult"></span><br>
             <strong>Biaya Inap Driver:</strong> <span id="driverStayCostResult"></span><br>
@@ -121,7 +124,9 @@
             biosolar: 6800
         };
         const carPrices = {
-            innova: 450000 // Harga sewa untuk Innova Reborn
+            innovaReborn24: 400000, // Harga sewa untuk Innova Reborn
+            innovaZenix20: 450000,          // Harga sewa untuk Innova Zenix Gasoline
+            hiacePremio28: 800000           // Harga sewa untuk Hiace Premio
 
         };
         const driverStayCostPerDay = 150000; // Biaya inap driver per hari
@@ -135,8 +140,10 @@
             else return 500000;
         }
 
-
         
+        // Ambil jenis mobil yang dipilih
+        const carType = document.getElementById("carType").value;
+
         // Menghitung durasi sewa berdasarkan input tanggal
         const rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
@@ -180,6 +187,8 @@
                 let driverStayCost = 0;
                 let driverMealCost = 0;
 
+
+                
                 // Jika pengguna memilih menggunakan driver, hitung biaya driver
                 if (document.getElementById("useDriver").checked) {
                     driverCost = calculateDriverCost(distance) * rentalDays; // Hitung biaya driver per hari berdasarkan jarak
@@ -225,6 +234,7 @@
                 document.getElementById("distanceResult").innerText = `${Math.round(distance).toLocaleString('id-ID')} km`;
                 document.getElementById("fuelConsumptionResult").innerText = `${Math.round(fuelConsumption).toLocaleString('id-ID')} L`;
                 document.getElementById("fuelCostResult").innerText = `Rp ${fuelCost.toLocaleString('id-ID')}`;
+                document.getElementById("carTypeResult").innerText = carType;
                 document.getElementById("carCostResult").innerText = `Rp ${carCost.toLocaleString('id-ID')}`;
                 document.getElementById("driverCostResult").innerText = `Rp ${driverCost.toLocaleString('id-ID')}`;
                 document.getElementById("driverStayCostResult").innerText = `Rp ${driverStayCost.toLocaleString('id-ID')}`;
