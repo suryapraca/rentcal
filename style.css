@@ -4,6 +4,11 @@
 h1 {
     color: #dc3545; /* Warna merah Toyota */
     font-weight: bold;
+
+.header img{
+    width: 50px;
+}    
+    
 }
 #map {
     height: 400px; 
