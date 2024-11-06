@@ -46,9 +46,9 @@ h1 {
 .header img {
     height: 80px; /* Ukuran logo */
 }
-.header h4 {
+.header h6 {
     margin: 0; /* Menghilangkan margin dari judul */
-    color: #dc3545; /* Warna merah Toyota */
+    color: #ffffff; /* Warna merah Toyota */
     font-weight: bold;
 }
 
