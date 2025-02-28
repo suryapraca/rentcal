@@ -74,6 +74,7 @@
         </div>
 
         <button id="calculateDistance" class="btn btn-primary w-100">Hitung Jarak dan Biaya</button>
+        <button id="sendWhatsApp" class="btn btn-success w-100" style="display: none;">Kirim Penawaran ke WA</button>
         
         <div id="result" class="alert alert-info mt-3 bg-white" style="display: none;">
             <strong>Titik Awal:</strong> <span id="startPointResult"></span><br>
@@ -292,6 +293,40 @@
         L.Control.Geocoder.nominatim().reverse(markers[1].getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
             document.getElementById("endPointResult").innerText = results[0].name || "Tujuan Tidak Diketahui";
         });
+
+        // Event listener untuk tombol kirim penawaran ke WA
+document.getElementById("sendWhatsApp").addEventListener("click", function() {
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    const startPoint = document.getElementById("startPointResult").innerText;
+    const endPoint = document.getElementById("endPointResult").innerText;
+    const carType = document.getElementById("carType").value;
+    const useDriver = document.getElementById("useDriver").checked ? "Ya" : "Tidak";
+    const useToll = document.getElementById("useToll").checked ? "Ya" : "Tidak";
+    const roundTrip = document.getElementById("roundTrip").checked ? "Ya" : "Tidak";
+    const totalCost = document.getElementById("totalCostResult").innerText;
+
+    const message = `Hallo Admin Asrent,\n` +
+                    `Berikut kami sampaikan penawaran harga sewa mobil yang kami butuhkan:\n\n` +
+                    `Tanggal: ${startDate} - ${endDate}\n` +
+                    `Tujuan: ${startPoint} - ${endPoint}\n` +
+                    `Mobil: ${carType}\n` +
+                    `Include:\n` +
+                    `- Driver: ${useDriver}\n` +
+                    `- BBM: ${document.getElementById("fuelType").value}\n` +
+                    `- Inap Driver: ${useDriver}\n` +
+                    `- Tol: ${useToll}\n\n` +
+                    `Harga: ${totalCost}`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+    
+    window.open(whatsappUrl, '_blank');
+});
+
+// Tampilkan tombol kirim penawaran setelah hasil ditampilkan
+document.getElementById("result").style.display = "block"; // Tampilkan hasil
+document.getElementById("sendWhatsApp").style.display = "block"; // Tampilkan tombol kirim WA
 
     </script>
     <footer class="footer text-center">
