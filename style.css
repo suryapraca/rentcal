@@ -1,162 +1,136 @@
-/* =========================
+/* ======================================
+   TOYOTA OFFICIAL DESIGN SYSTEM
+   Clean • Corporate • Professional
+====================================== */
+
+:root {
+    --toyota-red: #eb0a1e;
+    --toyota-dark: #1f1f1f;
+    --toyota-gray: #f5f5f5;
+    --toyota-border: #e5e7eb;
+    --toyota-text: #2b2b2b;
+}
+
+/* =====================
    GLOBAL
-========================= */
-* {
-    box-sizing: border-box;
-}
-
+===================== */
 body {
-    margin: 0;
-    background: linear-gradient(180deg, #ffffff 0%, #f5f6f8 100%);
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-    color: #212529;
+    background-color: var(--toyota-gray);
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--toyota-text);
 }
 
-/* =========================
-   TYPOGRAPHY
-========================= */
-h1 {
-    color: #EB0A1E; /* Toyota Red */
-    font-weight: 800;
-    letter-spacing: -0.5px;
-}
-
-h6 {
-    margin: 0;
-    font-weight: 600;
-}
-
-/* =========================
+/* =====================
    HEADER
-========================= */
+===================== */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 24px;
-    background: #ffffff;
-    border-bottom: 3px solid #EB0A1E;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    padding: 14px 28px;
+    background-color: #ffffff;
+    border-bottom: 3px solid var(--toyota-red);
 }
 
 .header img {
-    height: 64px;
-    transition: transform 0.3s ease;
+    height: 55px;
+    object-fit: contain;
 }
 
-.header img:hover {
-    transform: scale(1.05);
+/* =====================
+   TITLE
+===================== */
+h1 {
+    color: var(--toyota-dark);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 30px;
 }
 
-.header h6 {
-    color: #EB0A1E;
-}
-
-/* =========================
+/* =====================
    MAP
-========================= */
+===================== */
 #map {
     height: 420px;
-    border-radius: 16px;
-    margin-bottom: 24px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    border: 1px solid var(--toyota-border);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
 }
 
-/* =========================
-   CARD / RESULT
-========================= */
-.result-card,
-.alert {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 22px;
-    border-left: 6px solid #EB0A1E;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
-}
-
-/* =========================
+/* =====================
    FORM
-========================= */
+===================== */
 .form-label {
     font-weight: 600;
-    color: #212529;
+    color: var(--toyota-dark);
 }
 
 .form-control,
 .form-select {
-    border-radius: 12px;
-    border: 1px solid #e0e0e0;
-    padding: 10px 14px;
-    transition: all 0.2s ease;
+    border-radius: 8px;
+    border: 1px solid var(--toyota-border);
+    padding: 10px 12px;
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: #EB0A1E;
+    border-color: var(--toyota-red);
     box-shadow: 0 0 0 0.15rem rgba(235, 10, 30, 0.25);
 }
 
-/* =========================
-   CHECKBOX & RADIO
-========================= */
-.form-check-input {
-    cursor: pointer;
+/* Checkbox */
+input[type="checkbox"] {
+    accent-color: var(--toyota-red);
+    transform: scale(1.1);
 }
 
-.form-check-input:checked {
-    background-color: #EB0A1E;
-    border-color: #EB0A1E;
-}
-
-.form-check-label {
-    font-weight: 500;
-}
-
-/* =========================
+/* =====================
    BUTTON
-========================= */
+===================== */
 .btn-primary {
-    background: linear-gradient(135deg, #EB0A1E, #c90018);
+    background-color: var(--toyota-red);
     border: none;
-    border-radius: 14px;
+    font-weight: 600;
     padding: 12px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    box-shadow: 0 8px 20px rgba(235, 10, 30, 0.35);
-    transition: all 0.3s ease;
+    border-radius: 10px;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(235, 10, 30, 0.45);
+    background-color: #c40818;
 }
 
-/* =========================
+.btn-success {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 12px;
+}
+
+/* =====================
+   RESULT BOX
+===================== */
+.alert-info {
+    background-color: #ffffff;
+    border: 1px solid var(--toyota-border);
+    border-left: 5px solid var(--toyota-red);
+    color: var(--toyota-text);
+}
+
+.alert-info strong {
+    color: var(--toyota-dark);
+}
+
+/* =====================
    FOOTER
-========================= */
+===================== */
 footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 14px;
-    background: #ffffff;
-    border-top: 1px solid #eaeaea;
-    color: #6c757d;
-    font-size: 14px;
+    background-color: var(--toyota-dark);
+    padding: 15px 0;
+    margin-top: 40px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-
-    #map {
-        height: 320px;
-    }
+footer p {
+    margin: 0;
+    font-size: 14px;
+    color: #ffffff;
 }
