@@ -1,62 +1,136 @@
-/* body {
-    background-color: #f8f9fa;
-} */
+/* =========================
+   GLOBAL
+========================= */
+body {
+    background: linear-gradient(180deg, #ffffff, #f5f5f5);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: #212529;
+}
+
 h1 {
-    color: #dc3545; /* Warna merah Toyota */
-    font-weight: bold;
-
-.header img{
-    width: 50px;
-}    
-    
-}
-#map {
-    height: 400px; 
-    border-radius: 10px; 
-    margin-bottom: 20px;
-}
-.result-card {
-    background-color: #ffffff; 
-    border-radius: 10px; 
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-.form-label {
-    font-weight: bold;
-}
-.btn-primary {
-    background-color: #dc3545; /* Merah Toyota */
-    border: none;
-}
-.btn-primary:hover {
-    background-color: #c82333; /* Warna gelap untuk hover */
-}
-.alert {
-    border-radius: 10px; 
+    color: #EB0A1E; /* Toyota Red */
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
+/* =========================
+   HEADER
+========================= */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px; /* Menambahkan padding */
-    background-color: #333333; /* Warna latar belakang */
-    /* border-bottom: 1px solid #dee2e6; Garis bawah */
-}
-.header img {
-    height: 80px; /* Ukuran logo */
-}
-.header h6 {
-    margin: 0; /* Menghilangkan margin dari judul */
-    color: #ffffff; /* Warna merah Toyota */
-    font-weight: bold;
+    padding: 14px 24px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    border-bottom: 3px solid #EB0A1E;
 }
 
+.header img {
+    height: 64px;
+    transition: transform 0.3s ease;
+}
+
+.header img:hover {
+    transform: scale(1.05);
+}
+
+.header h6 {
+    margin: 0;
+    color: #EB0A1E;
+    font-weight: 700;
+}
+
+/* =========================
+   MAP
+========================= */
+#map {
+    height: 420px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* =========================
+   FORM
+========================= */
+.form-label {
+    font-weight: 600;
+    color: #212529;
+}
+
+.form-control,
+.form-select {
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #EB0A1E;
+    box-shadow: 0 0 0 0.15rem rgba(235, 10, 30, 0.2);
+}
+
+/* =========================
+   CHECKBOX
+========================= */
+.form-check-input {
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #EB0A1E;
+    border-color: #EB0A1E;
+}
+
+.form-check-label {
+    font-weight: 500;
+}
+
+/* =========================
+   BUTTON
+========================= */
+.btn-primary {
+    background: linear-gradient(135deg, #EB0A1E, #c90018);
+    border: none;
+    border-radius: 14px;
+    padding: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    box-shadow: 0 8px 20px rgba(235, 10, 30, 0.35);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(235, 10, 30, 0.45);
+}
+
+/* =========================
+   RESULT CARD
+========================= */
+.result-card,
+.alert {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    border-left: 6px solid #EB0A1E;
+}
+
+/* =========================
+   FOOTER
+========================= */
 footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    background-color: #333333;
+    padding: 14px;
+    background: #ffffff;
+    border-top: 1px solid #eaeaea;
+    color: #6c757d;
+    font-size: 14px;
 }
-
