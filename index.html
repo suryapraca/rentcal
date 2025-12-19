@@ -269,7 +269,6 @@
                 }
 
                 // Jika pengguna memilih jalur tol, hitung biaya tol
-                let tollCost = 0;
                 if (document.getElementById("useToll").checked) {
                   const route = document.getElementById("tollRoute").value;
                   tollCost = tollPrices[route] || 0;
@@ -406,6 +405,7 @@ document.getElementById("sendWhatsApp").style.display = "block"; // Tampilkan to
     </footer>
 </body>
 </html>
+
 
 
 
