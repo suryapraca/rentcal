@@ -1,16 +1,29 @@
 /* =========================
    GLOBAL
 ========================= */
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background: linear-gradient(180deg, #ffffff, #f5f5f5);
-    font-family: 'Inter', 'Segoe UI', sans-serif;
+    margin: 0;
+    background: linear-gradient(180deg, #ffffff 0%, #f5f6f8 100%);
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
     color: #212529;
 }
 
+/* =========================
+   TYPOGRAPHY
+========================= */
 h1 {
     color: #EB0A1E; /* Toyota Red */
     font-weight: 800;
     letter-spacing: -0.5px;
+}
+
+h6 {
+    margin: 0;
+    font-weight: 600;
 }
 
 /* =========================
@@ -22,8 +35,8 @@ h1 {
     align-items: center;
     padding: 14px 24px;
     background: #ffffff;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     border-bottom: 3px solid #EB0A1E;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
 .header img {
@@ -36,9 +49,7 @@ h1 {
 }
 
 .header h6 {
-    margin: 0;
     color: #EB0A1E;
-    font-weight: 700;
 }
 
 /* =========================
@@ -48,8 +59,20 @@ h1 {
     height: 420px;
     border-radius: 16px;
     margin-bottom: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   CARD / RESULT
+========================= */
+.result-card,
+.alert {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 22px;
+    border-left: 6px solid #EB0A1E;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
 }
 
 /* =========================
@@ -71,11 +94,11 @@ h1 {
 .form-control:focus,
 .form-select:focus {
     border-color: #EB0A1E;
-    box-shadow: 0 0 0 0.15rem rgba(235, 10, 30, 0.2);
+    box-shadow: 0 0 0 0.15rem rgba(235, 10, 30, 0.25);
 }
 
 /* =========================
-   CHECKBOX
+   CHECKBOX & RADIO
 ========================= */
 .form-check-input {
     cursor: pointer;
@@ -110,18 +133,6 @@ h1 {
 }
 
 /* =========================
-   RESULT CARD
-========================= */
-.result-card,
-.alert {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
-    border-left: 6px solid #EB0A1E;
-}
-
-/* =========================
    FOOTER
 ========================= */
 footer {
@@ -133,4 +144,19 @@ footer {
     border-top: 1px solid #eaeaea;
     color: #6c757d;
     font-size: 14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    #map {
+        height: 320px;
+    }
 }
