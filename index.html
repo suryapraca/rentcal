@@ -236,7 +236,9 @@
             // Kalkulasi jarak, konsumsi BBM, biaya BBM, biaya sewa, biaya driver, dan biaya tol saat rute selesai
             routingControl.on('routesfound', function(e) {
                 const distance = e.routes[0].summary.totalDistance / 1000; // dalam km
-                const fuelConsumption = distance / fuelEfficiency; // Konsumsi BBM dalam liter
+                const fuelRatio = parseInt(document.getElementById("fuelRatio").value);
+                const fuelConsumption = distance / fuelRatio;
+
 
                 // Ambil jenis bahan bakar, mobil yang dipilih, dan tanggal sewa
                 const fuelType = document.getElementById("fuelType").value;
@@ -404,6 +406,7 @@ document.getElementById("sendWhatsApp").style.display = "block"; // Tampilkan to
     </footer>
 </body>
 </html>
+
 
 
 
