@@ -247,9 +247,12 @@
                 }
 
                 // Jika pengguna memilih jalur tol, hitung biaya tol
+                let tollCost = 0;
                 if (document.getElementById("useToll").checked) {
-                    tollCost = distance * 1000; // Biaya tol
+                  const route = document.getElementById("tollRoute").value;
+                  tollCost = tollPrices[route] || 0;
                 }
+
 
                 // Jika PP dicentang, kalikan biaya BBM dan tol dengan 2
                 if (document.getElementById("roundTrip").checked) {
@@ -381,4 +384,5 @@ document.getElementById("sendWhatsApp").style.display = "block"; // Tampilkan to
     </footer>
 </body>
 </html>
+
 
