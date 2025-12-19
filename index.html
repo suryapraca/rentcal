@@ -145,6 +145,26 @@
         let markers = [];
         let routingControl = null;
         const fuelEfficiency = 7; // 20 km per liter
+        const tollPrices = {
+              "surabaya-gempol": 10000,
+              "surabaya-mojokerto": 43500,
+              "surabaya-pandaan": 24500,
+              "surabaya-malang": 57000,
+              "surabaya-gending": 50000,
+              "surabaya-probolinggo-barat": 90500,
+              "surabaya-probolinggo-timur": 104500,
+              "surabaya-tongas": 81500,
+              "surabaya-kertosono": 98500,
+              "surabaya-ngawi": 202000,
+              "surabaya-solo": 320500,
+              "surabaya-jogja": 370000,
+              "surabaya-semarang": 406000,
+              "surabaya-salatiga": 401000,
+              "surabaya-tegal": 522500,
+              "surabaya-bandung": 890000,
+              "surabaya-jakarta": 883500
+            };
+
         const fuelPrices = {
             pertalite: 10000,
             biosolar: 6800
@@ -361,3 +381,4 @@ document.getElementById("sendWhatsApp").style.display = "block"; // Tampilkan to
     </footer>
 </body>
 </html>
+
