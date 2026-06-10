@@ -1,414 +1,610 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Biaya Pelayanan Sewa Kendaraan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <!-- <style>
-        #map { height: 500px; }
-    </style> -->
-</head>
-<body class="bg-dark">
-    <div class="header shadow-lg p-3 mb-3">
-        <img src="file.png" alt="Logo Kiri" /> <!-- Ganti dengan URL logo kiri -->
-        
-        <img src="logo asjs.png" alt="Logo Kanan"/> 
-    </div>
-    
-    <div class="container mt-5">
-        <h1 class="text-center text-light">Simulasi Biaya Pelayanan Sewa Kendaraan</h1>
-        <div id="map" class="mb-3"></div>
-        
-        <!-- Dropdown untuk memilih jenis BBM -->
-        <div class="mb-3 text-light">
-            <label for="fuelType" class="form-label">Pilih Jenis BBM:</label>
-            <select id="fuelType" class="form-select">
-                <option value="pertalite">Pertalite - Rp 10.000/Liter</option>
-                <option value="biosolar">Biosolar - Rp 6.800/Liter</option>
-            </select>
-        </div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulasi Biaya Sewa Kendaraan — Asrent</title>
 
-        <div class="mb-3 text-light">
-              <label class="form-label">Konsumsi BBM:</label>
-              <select id="fuelRatio" class="form-select">
-                <option value="5">1 : 5 Km/L</option>
-                <option value="6">1 : 6 Km/L</option>
-                <option value="7" selected>1 : 7 Km/L</option>
-                <option value="8">1 : 8 Km/L</option>
-                <option value="9">1 : 9 Km/L</option>
-                <option value="10">1 : 10 Km/L</option>
-                <option value="11">1 : 11 Km/L</option>
-                <option value="12">1 : 12 Km/L</option>
-                <option value="13">1 : 13 Km/L</option>
-                <option value="14">1 : 14 Km/L</option>
-                <option value="15">1 : 15 Km/L</option>
-                <option value="16">1 : 16 Km/L</option>
-                <option value="17">1 : 17 Km/L</option>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#f0f9ff',
+              100: '#e0f2fe',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            surface: '#0f172a',
+            card:    '#1e293b',
+            border:  '#334155',
+            muted:   '#94a3b8',
+          },
+          fontFamily: {
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+            body:    ['"Inter"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- AOS Animate on Scroll -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    body { background-color: #0f172a; }
+
+    /* Map */
+    #map { height: 380px; border-radius: 12px; overflow: hidden; }
+
+    /* Custom select & input styling */
+    .form-field {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f1f5f9;
+      border-radius: 8px;
+      padding: 10px 14px;
+      width: 100%;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-field:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14,165,233,0.2);
+    }
+    .form-field option { background: #1e293b; color: #f1f5f9; }
+
+    /* Custom checkbox */
+    .custom-check { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .custom-check input[type="checkbox"] {
+      width: 18px; height: 18px; accent-color: #0ea5e9; cursor: pointer;
+    }
+
+    /* Result card rows */
+    .result-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #1e293b;
+    }
+    .result-row:last-child { border-bottom: none; }
+
+    /* Gradient accent line */
+    .accent-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #0ea5e9, #38bdf8, #7dd3fc);
+      border-radius: 2px;
+    }
+
+    /* Glow button */
+    .btn-glow {
+      background: linear-gradient(135deg, #0ea5e9, #0369a1);
+      box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-glow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(14,165,233,0.5);
+    }
+    .btn-glow:active { transform: translateY(0); }
+
+    .btn-wa {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      box-shadow: 0 4px 20px rgba(22,163,74,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(22,163,74,0.45); }
+
+    /* Section label badge */
+    .section-badge {
+      display: inline-block;
+      background: rgba(14,165,233,0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(14,165,233,0.25);
+      border-radius: 99px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Tooltip divider line */
+    .divider { border-top: 1px solid #1e293b; margin: 12px 0; }
+
+    /* Routing machine panel — minimise */
+    .leaflet-routing-container { display: none !important; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+    /* Select arrow */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '▾';
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      color: #64748b; pointer-events: none; font-size: 13px;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen">
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border/60 shadow-lg">
+    <div class="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- Placeholder logo — swap src with real asset -->
+        <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center text-white font-display font-bold text-sm">AS</div>
+        <div>
+          <p class="text-white font-display font-bold text-sm leading-none">ASRENT</p>
+          <p class="text-muted text-xs">Rental Kendaraan Premium</p>
+        </div>
+      </div>
+      <span class="section-badge">Simulasi Biaya</span>
+    </div>
+  </header>
+
+  <!-- ── HERO ──────────────────────────────────────────── -->
+  <section class="max-w-5xl mx-auto px-5 pt-10 pb-6" data-aos="fade-down">
+    <div class="accent-bar w-16 mb-4"></div>
+    <h1 class="font-display text-3xl md:text-4xl font-extrabold text-white leading-tight">
+      Simulasi Biaya <br class="hidden md:block"/>
+      <span class="text-brand-400">Sewa Kendaraan</span>
+    </h1>
+    <p class="text-muted mt-3 text-sm max-w-lg">
+      Hitung estimasi biaya perjalanan Anda secara real-time — termasuk BBM, driver, tol, dan durasi sewa.
+    </p>
+  </section>
+
+  <!-- ── MAIN CONTENT ───────────────────────────────────── -->
+  <main class="max-w-5xl mx-auto px-5 pb-16 space-y-6">
+
+    <!-- MAP CARD -->
+    <div class="bg-card rounded-2xl border border-border overflow-hidden" data-aos="fade-up" data-aos-delay="60">
+      <div class="px-5 pt-4 pb-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+        <p class="text-white font-semibold text-sm">Pilih Rute Perjalanan</p>
+      </div>
+      <p class="text-muted text-xs px-5 pb-3">Gunakan ikon pencarian di peta untuk menentukan titik awal dan tujuan.</p>
+      <div id="map"></div>
+    </div>
+
+    <!-- FORM GRID -->
+    <div class="grid md:grid-cols-2 gap-5">
+
+      <!-- LEFT COLUMN -->
+      <div class="space-y-5" data-aos="fade-up" data-aos-delay="100">
+
+        <!-- Kendaraan & BBM -->
+        <div class="bg-card rounded-2xl border border-border p-5 space-y-4">
+          <p class="text-white font-display font-semibold text-sm flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-brand-600/30 text-brand-400 text-xs flex items-center justify-center font-bold">1</span>
+            Kendaraan & Bahan Bakar
+          </p>
+
+          <div>
+            <label class="block text-muted text-xs font-medium mb-1.5">Jenis Kendaraan</label>
+            <div class="select-wrap">
+              <select id="carType" class="form-field pr-8">
+                <option value="innovaReborn24">Innova Reborn Diesel 2400cc — Rp 500.000/hari</option>
+                <option value="innovaZenix20">Innova Zenix Gasoline 2000cc — Rp 550.000/hari</option>
+                <option value="hiacePremio28">Hiace Premio 2800cc — Rp 900.000/hari</option>
+                <option value="avanza">All New Avanza 1500cc — Rp 350.000/hari</option>
               </select>
             </div>
+          </div>
 
+          <div>
+            <label class="block text-muted text-xs font-medium mb-1.5">Jenis BBM</label>
+            <div class="select-wrap">
+              <select id="fuelType" class="form-field pr-8">
+                <option value="pertalite">Pertalite — Rp 10.000/Liter</option>
+                <option value="biosolar">Biosolar — Rp 6.800/Liter</option>
+              </select>
+            </div>
+          </div>
 
-        <!-- Dropdown untuk memilih jenis mobil -->
-        <div class="mb-3 text-light">
-            <label for="carType" class="form-label">Pilih Mobil:</label>
-            <select id="carType" class="form-select">
-                <option value="innovaReborn24">Innova Reborn Diesel 2400cc - Rp 500.000</option>
-                <option value="innovaZenix20">Innova Zenix Gasoline 2000cc - Rp 550.000</option>
-                <option value="hiacePremio28">Hiace Premio 2800cc - Rp 900.000</option>
-                <option value="avanza">All New Avanza 1500cc - Rp 350.000</option>
-            </select>
+          <div>
+            <label class="block text-muted text-xs font-medium mb-1.5">Konsumsi BBM</label>
+            <div class="select-wrap">
+              <select id="fuelRatio" class="form-field pr-8">
+                <option value="5">1 : 5 Km/Liter</option>
+                <option value="6">1 : 6 Km/Liter</option>
+                <option value="7" selected>1 : 7 Km/Liter</option>
+                <option value="8">1 : 8 Km/Liter</option>
+                <option value="9">1 : 9 Km/Liter</option>
+                <option value="10">1 : 10 Km/Liter</option>
+                <option value="11">1 : 11 Km/Liter</option>
+                <option value="12">1 : 12 Km/Liter</option>
+                <option value="13">1 : 13 Km/Liter</option>
+                <option value="14">1 : 14 Km/Liter</option>
+                <option value="15">1 : 15 Km/Liter</option>
+                <option value="16">1 : 16 Km/Liter</option>
+                <option value="17">1 : 17 Km/Liter</option>
+              </select>
+            </div>
+          </div>
         </div>
 
-        <!-- Input untuk tanggal mulai sewa -->
-        <div class="mb-3 text-light">
-            <label for="startDate" class="form-label">Tanggal Mulai Sewa:</label>
-            <input type="date" id="startDate" class="form-control">
+        <!-- Tanggal -->
+        <div class="bg-card rounded-2xl border border-border p-5 space-y-4">
+          <p class="text-white font-display font-semibold text-sm flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-brand-600/30 text-brand-400 text-xs flex items-center justify-center font-bold">2</span>
+            Durasi Sewa
+          </p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-muted text-xs font-medium mb-1.5">Tanggal Mulai</label>
+              <input type="date" id="startDate" class="form-field" />
+            </div>
+            <div>
+              <label class="block text-muted text-xs font-medium mb-1.5">Tanggal Selesai</label>
+              <input type="date" id="endDate" class="form-field" />
+            </div>
+          </div>
         </div>
 
-        <!-- Input untuk tanggal selesai sewa -->
-        <div class="mb-3 text-light">
-            <label for="endDate" class="form-label">Tanggal Selesai Sewa:</label>
-            <input type="date" id="endDate" class="form-control">
+      </div><!-- /LEFT -->
+
+      <!-- RIGHT COLUMN -->
+      <div class="space-y-5" data-aos="fade-up" data-aos-delay="150">
+
+        <!-- Opsi Perjalanan -->
+        <div class="bg-card rounded-2xl border border-border p-5 space-y-4">
+          <p class="text-white font-display font-semibold text-sm flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-brand-600/30 text-brand-400 text-xs flex items-center justify-center font-bold">3</span>
+            Opsi Perjalanan
+          </p>
+
+          <!-- Driver toggle -->
+          <label class="custom-check">
+            <input type="checkbox" id="useDriver" />
+            <div>
+              <p class="text-white text-sm font-medium">Gunakan Driver</p>
+              <p class="text-muted text-xs">Termasuk biaya driver, inap & makan</p>
+            </div>
+          </label>
+
+          <!-- PP toggle -->
+          <label class="custom-check">
+            <input type="checkbox" id="roundTrip" />
+            <div>
+              <p class="text-white text-sm font-medium">Pulang Pergi (PP)</p>
+              <p class="text-muted text-xs">Biaya BBM & tol dikalikan 2×</p>
+            </div>
+          </label>
+
+          <!-- Tol toggle -->
+          <label class="custom-check">
+            <input type="checkbox" id="useToll" />
+            <div>
+              <p class="text-white text-sm font-medium">Gunakan Jalur Tol</p>
+              <p class="text-muted text-xs">Pilih rute tol di bawah</p>
+            </div>
+          </label>
+
+          <!-- Rute tol -->
+          <div id="tollRouteWrapper" class="hidden">
+            <label class="block text-muted text-xs font-medium mb-1.5">Rute Tol</label>
+            <div class="select-wrap">
+              <select id="tollRoute" class="form-field pr-8">
+                <option value="">— Pilih Rute —</option>
+                <option value="surabaya-gempol">Surabaya → Gempol</option>
+                <option value="surabaya-mojokerto">Surabaya → Mojokerto</option>
+                <option value="surabaya-pandaan">Surabaya → Pandaan</option>
+                <option value="surabaya-malang">Surabaya → Malang</option>
+                <option value="surabaya-gending">Surabaya → Gending</option>
+                <option value="surabaya-probolinggo-barat">Surabaya → Probolinggo Barat</option>
+                <option value="surabaya-probolinggo-timur">Surabaya → Probolinggo Timur</option>
+                <option value="surabaya-tongas">Surabaya → Tongas</option>
+                <option value="surabaya-kertosono">Surabaya → Kertosono</option>
+                <option value="surabaya-ngawi">Surabaya → Ngawi</option>
+                <option value="surabaya-solo">Surabaya → Solo</option>
+                <option value="surabaya-jogja">Surabaya → Yogyakarta</option>
+                <option value="surabaya-semarang">Surabaya → Semarang</option>
+                <option value="surabaya-salatiga">Surabaya → Salatiga</option>
+                <option value="surabaya-tegal">Surabaya → Tegal</option>
+                <option value="surabaya-bandung">Surabaya → Bandung</option>
+                <option value="surabaya-jakarta">Surabaya → Jakarta</option>
+              </select>
+            </div>
+          </div>
         </div>
 
-        <!-- Checkbox untuk memilih menggunakan driver -->
-        <div class="mb-3 text-light">
-            <input type="checkbox" id="useDriver">
-            <label for="useDriver" class="form-label">Gunakan Driver</label>
+        <!-- CTA -->
+        <button id="calculateDistance"
+          class="btn-glow w-full py-3.5 rounded-xl text-white font-display font-bold text-sm flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          Hitung Jarak &amp; Biaya
+        </button>
+
+        <!-- WA button (hidden until result shown) -->
+        <button id="sendWhatsApp"
+          class="btn-wa w-full py-3.5 rounded-xl text-white font-display font-bold text-sm items-center justify-center gap-2 hidden">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          Kirim Penawaran via WhatsApp
+        </button>
+
+      </div><!-- /RIGHT -->
+
+    </div><!-- /FORM GRID -->
+
+    <!-- RESULT CARD -->
+    <div id="result" class="hidden" data-aos="fade-up">
+      <div class="bg-card rounded-2xl border border-border overflow-hidden">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+          <div>
+            <div class="accent-bar w-10 mb-2"></div>
+            <p class="text-white font-display font-bold">Rincian Estimasi Biaya</p>
+          </div>
+          <span class="section-badge">HPP</span>
         </div>
 
-        <!-- Checkbox untuk menggunakan jalur tol -->
-        <div class="mb-3 text-light">
-            <input type="checkbox" id="useToll">
-            <label for="useToll" class="form-label">Gunakan Jalur Tol</label>
+        <div class="p-6 space-y-0">
+
+          <!-- Route summary -->
+          <div class="grid md:grid-cols-2 gap-4 mb-5 p-4 bg-surface rounded-xl border border-border/60">
+            <div>
+              <p class="text-muted text-xs mb-1">Titik Awal</p>
+              <p class="text-white font-semibold text-sm" id="startPointResult">—</p>
+            </div>
+            <div>
+              <p class="text-muted text-xs mb-1">Tujuan</p>
+              <p class="text-white font-semibold text-sm" id="endPointResult">—</p>
+            </div>
+            <div>
+              <p class="text-muted text-xs mb-1">Jarak</p>
+              <p class="text-brand-400 font-bold" id="distanceResult">—</p>
+            </div>
+            <div>
+              <p class="text-muted text-xs mb-1">Durasi Sewa</p>
+              <p class="text-brand-400 font-bold" id="rentalDurationResult">—</p>
+            </div>
+          </div>
+
+          <!-- Cost rows -->
+          <div class="space-y-0 text-sm">
+            <div class="result-row"><span class="text-muted">Konsumsi BBM</span><span class="text-white font-medium" id="fuelConsumptionResult">—</span></div>
+            <div class="result-row"><span class="text-muted">Biaya BBM</span><span class="text-white font-medium" id="fuelCostResult">—</span></div>
+            <div class="result-row"><span class="text-muted">Jenis Kendaraan</span><span class="text-white font-medium" id="carTypeResult">—</span></div>
+            <div class="result-row"><span class="text-muted">Biaya Sewa Mobil</span><span class="text-white font-medium" id="carCostResult">—</span></div>
+            <div class="result-row"><span class="text-muted">Biaya Driver</span><span class="text-white font-medium" id="driverCostResult">—</span></div>
+            <div class="result-row"><span class="text-muted">Biaya Inap Driver</span><span class="text-white font-medium" id="driverStayCostResult">—</span></div>
+            <div class="result-row"><span class="text-muted">Biaya Makan Driver</span><span class="text-white font-medium" id="driverMealCostResult">—</span></div>
+            <div class="result-row"><span class="text-muted">Biaya Tol</span><span class="text-white font-medium" id="tollCostResult">—</span></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Totals -->
+          <div class="grid md:grid-cols-3 gap-3 mt-4">
+            <div class="p-4 bg-surface rounded-xl border border-border/60 text-center">
+              <p class="text-muted text-xs mb-1">Total HPP</p>
+              <p class="text-white font-display font-bold text-lg" id="totalCostResult">—</p>
+            </div>
+            <div class="p-4 bg-brand-900/40 rounded-xl border border-brand-700/40 text-center">
+              <p class="text-brand-400 text-xs mb-1 font-medium">Harga Agent</p>
+              <p class="text-brand-300 font-display font-bold text-lg" id="agentPriceResult">—</p>
+            </div>
+            <div class="p-4 rounded-xl text-center"
+              style="background:linear-gradient(135deg,rgba(14,165,233,0.15),rgba(3,105,161,0.15));border:1px solid rgba(14,165,233,0.25)">
+              <p class="text-white text-xs mb-1 font-medium">Harga Customer</p>
+              <p class="text-white font-display font-bold text-lg" id="customerPriceResult">—</p>
+            </div>
+          </div>
         </div>
-      
-      <div class="mb-3 text-light">
-          <label class="form-label">Rute Tol:</label>
-          <select id="tollRoute" class="form-select">
-            <option value="">-- Pilih Rute --</option>
-            <option value="surabaya-gempol">Surabaya - Gempol</option>
-            <option value="surabaya-mojokerto">Surabaya - Mojokerto</option>
-            <option value="surabaya-pandaan">Surabaya - Pandaan</option>
-            <option value="surabaya-malang">Surabaya - Malang</option>
-            <option value="surabaya-gending">Surabaya - Gending</option>
-            <option value="surabaya-probolinggo-barat">Surabaya - Probolinggo Barat</option>
-            <option value="surabaya-probolinggo-timur">Surabaya - Probolinggo Timur</option>
-            <option value="surabaya-tongas">Surabaya - Tongas</option>
-            <option value="surabaya-kertosono">Surabaya - Kertosono</option>
-            <option value="surabaya-ngawi">Surabaya - Ngawi</option>
-            <option value="surabaya-solo">Surabaya - Solo</option>
-            <option value="surabaya-jogja">Surabaya - Jogjakarta</option>
-            <option value="surabaya-semarang">Surabaya - Semarang</option>
-            <option value="surabaya-salatiga">Surabaya - Salatiga</option>
-            <option value="surabaya-tegal">Surabaya - Tegal</option>
-            <option value="surabaya-bandung">Surabaya - Bandung</option>
-            <option value="surabaya-jakarta">Surabaya - Jakarta</option>
-          </select>
-        </div>
-
-
-        <!-- Checkbox untuk PP -->
-        <div class="mb-3 text-light">
-            <input type="checkbox" id="roundTrip">
-            <label for="roundTrip" class="form-label">Pulang Pergi (PP)</label>
-        </div>
-
-        <button id="calculateDistance" class="btn btn-primary w-100">Hitung Jarak dan Biaya</button>
-        <button id="sendWhatsApp" class="btn btn-success w-100" style="display: none;">Kirim Penawaran ke WA</button>
-        
-        <div id="result" class="alert alert-info mt-3 bg-white" style="display: none;">
-            <strong>Titik Awal:</strong> <span id="startPointResult"></span><br>
-            <strong>Tujuan:</strong> <span id="endPointResult"></span><br>
-            <strong>Jarak:</strong> <span id="distanceResult"></span><br>
-            <strong>Durasi Sewa:</strong> <span id="rentalDurationResult"></span><br>
-            <strong>Konsumsi BBM:</strong> <span id="fuelConsumptionResult"></span><br>
-            <strong>Biaya BBM:</strong> <span id="fuelCostResult"></span><br>
-            <strong>Jenis Mobil:</strong> <span id="carTypeResult"></span><br>
-            <strong>Biaya Sewa Mobil:</strong> <span id="carCostResult"></span><br>
-            <strong>Biaya Driver:</strong> <span id="driverCostResult"></span><br>
-            <strong>Biaya Inap Driver:</strong> <span id="driverStayCostResult"></span><br>
-            <strong>Biaya Makan Driver:</strong> <span id="driverMealCostResult"></span><br>
-            <strong>Biaya Tol:</strong> <span id="tollCostResult"></span><br>
-            <strong>Total Biaya HPP:</strong> <span id="totalCostResult"></span><br>
-            <br>
-            <strong>Harga Agent:</strong> <span id="agentPriceResult"></span><br>
-            <strong>Harga ke Customer:</strong> <span id="customerPriceResult"></span><br>
-        </div>
-
-
-
-        <div class="text-light pt-2">
-            <h6>Catatan : Harga simulasi ini tidak mengikat sewaktu - waktu dapat berubah, Tanpa Pemberitahuan Lebih Lanjut !!</h6>
-        </div>
-        <br>
-        <br>
+      </div>
     </div>
 
-    <!-- Leaflet JS, Routing Machine, dan Leaflet Geocoder -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-    <script>
-        // Inisialisasi peta
-        const map = L.map('map').setView([-7.2575, 112.7521], 13);  // Koordinat Surabaya
+    <!-- Disclaimer -->
+    <p class="text-muted text-xs text-center" data-aos="fade-up" data-aos-delay="80">
+      ⚠️ Harga simulasi ini tidak mengikat dan dapat berubah sewaktu-waktu tanpa pemberitahuan lebih lanjut.
+    </p>
 
-        // Menambahkan layer peta
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-        }).addTo(map);
+  </main>
 
-        let markers = [];
-        let routingControl = null;
-        const fuelEfficiency = 7; // 20 km per liter
-        const tollPrices = {
-              "surabaya-gempol": 10000,
-              "surabaya-mojokerto": 43500,
-              "surabaya-pandaan": 24500,
-              "surabaya-malang": 57000,
-              "surabaya-gending": 50000,
-              "surabaya-probolinggo-barat": 90500,
-              "surabaya-probolinggo-timur": 104500,
-              "surabaya-tongas": 81500,
-              "surabaya-kertosono": 98500,
-              "surabaya-ngawi": 202000,
-              "surabaya-solo": 320500,
-              "surabaya-jogja": 370000,
-              "surabaya-semarang": 406000,
-              "surabaya-salatiga": 401000,
-              "surabaya-tegal": 522500,
-              "surabaya-bandung": 890000,
-              "surabaya-jakarta": 883500
-            };
+  <!-- ── FOOTER ─────────────────────────────────────────── -->
+  <footer class="border-t border-border py-5 text-center">
+    <p class="text-muted text-xs">Copyright &copy; 2024 <span class="text-white font-semibold">Asrimotor</span>. All rights reserved.</p>
+  </footer>
 
-        const fuelPrices = {
-            pertalite: 10000,
-            biosolar: 6800
-        };
-        const carPrices = {
-            innovaReborn24: 500000, // Harga sewa untuk Innova Reborn
-            innovaZenix20: 550000,          // Harga sewa untuk Innova Zenix Gasoline
-            hiacePremio28: 900000,           // Harga sewa untuk Hiace Premio
-            avanza: 350000
+  <!-- ── SCRIPTS ────────────────────────────────────────── -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
-        };
-        const driverStayCostPerDay = 150000; // Biaya inap driver per hari
-        const driverMealCostPerDay = 50000; // Biaya makan driver per hari
+  <script>
+    // ── AOS init
+    AOS.init({ once: true, duration: 500, easing: 'ease-out-cubic' });
 
-        // Fungsi untuk menentukan biaya driver berdasarkan jarak
-        function calculateDriverCost(distance) {
-            if (distance < 30) return 200000;
-            else if (distance <= 500) return 300000;
-            else if (distance <= 600) return 400000;
-            else return 500000;
-        }
+    // ── Toggle tol route selector
+    document.getElementById('useToll').addEventListener('change', function() {
+      document.getElementById('tollRouteWrapper').classList.toggle('hidden', !this.checked);
+    });
 
-        
-        // Ambil jenis mobil yang dipilih
-        const carType = document.getElementById("carType").value;
+    // ── Leaflet map
+    const map = L.map('map').setView([-7.2575, 112.7521], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
 
-        // Menghitung durasi sewa berdasarkan input tanggal
-        const rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    let markers = [];
+    let routingControl = null;
 
-        // Fungsi untuk menambahkan marker dan jalur
-        function addMarkerAndRoute(latlng) {
-    if (markers.length < 2) {
-        const marker = L.marker(latlng).addTo(map);
-        markers.push(marker);
+    const fuelPrices    = { pertalite: 10000, biosolar: 6800 };
+    const carPrices     = { innovaReborn24: 500000, innovaZenix20: 550000, hiacePremio28: 900000, avanza: 350000 };
+    const carLabels     = { innovaReborn24: 'Innova Reborn Diesel 2400cc', innovaZenix20: 'Innova Zenix Gasoline 2000cc', hiacePremio28: 'Hiace Premio 2800cc', avanza: 'All New Avanza 1500cc' };
+    const driverStayPerDay = 150000;
+    const driverMealPerDay = 50000;
+    const tollPrices = {
+      'surabaya-gempol': 10000, 'surabaya-mojokerto': 43500, 'surabaya-pandaan': 24500,
+      'surabaya-malang': 57000, 'surabaya-gending': 50000, 'surabaya-probolinggo-barat': 90500,
+      'surabaya-probolinggo-timur': 104500, 'surabaya-tongas': 81500, 'surabaya-kertosono': 98500,
+      'surabaya-ngawi': 202000, 'surabaya-solo': 320500, 'surabaya-jogja': 370000,
+      'surabaya-semarang': 406000, 'surabaya-salatiga': 401000, 'surabaya-tegal': 522500,
+      'surabaya-bandung': 890000, 'surabaya-jakarta': 883500
+    };
 
-        if (markers.length === 2) {
-            if (routingControl) {
-                map.removeControl(routingControl); // Hapus jalur sebelumnya jika ada
-            }
-
-            routingControl = L.Routing.control({
-                waypoints: [
-                    markers[0].getLatLng(),
-                    markers[1].getLatLng()
-                ],
-                routeWhileDragging: false,
-                createMarker: function() { return null; } // Hanya gunakan marker yang ditentukan
-            }).addTo(map);
-
-            // Kalkulasi jarak, konsumsi BBM, biaya BBM, biaya sewa, biaya driver, dan biaya tol saat rute selesai
-            routingControl.on('routesfound', function(e) {
-                const distance = e.routes[0].summary.totalDistance / 1000; // dalam km
-                const fuelRatio = parseInt(document.getElementById("fuelRatio").value);
-                const fuelConsumption = distance / fuelRatio;
-
-
-                // Ambil jenis bahan bakar, mobil yang dipilih, dan tanggal sewa
-                const fuelType = document.getElementById("fuelType").value;
-                const carType = document.getElementById("carType").value;
-                const startDate = new Date(document.getElementById("startDate").value);
-                const endDate = new Date(document.getElementById("endDate").value);
-                const rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // Menghitung jumlah hari sewa
-                
-                // Hitung biaya BBM dan biaya sewa mobil
-                let fuelCost = fuelConsumption * fuelPrices[fuelType]; // Biaya BBM
-                let tollCost = 0; // Biaya tol
-                const carCost = carPrices[carType] * rentalDays; // Biaya sewa mobil per hari
-                let driverCost = 0;
-                let driverStayCost = 0;
-                let driverMealCost = 0;
-
-
-                
-                // Jika pengguna memilih menggunakan driver, hitung biaya driver
-                if (document.getElementById("useDriver").checked) {
-                    driverCost = calculateDriverCost(distance) * rentalDays; // Hitung biaya driver per hari berdasarkan jarak
-                    // Biaya inap driver dihitung untuk setiap hari setelah hari pertama
-                    if (rentalDays > 1) {
-                        driverStayCost = driverStayCostPerDay * (rentalDays - 1); // Biaya inap driver
-                    }
-                    // Biaya makan driver dihitung untuk seluruh hari sewa
-                    driverMealCost = driverMealCostPerDay * rentalDays; // Biaya makan driver
-                }
-
-                // Jika pengguna memilih jalur tol, hitung biaya tol
-                if (document.getElementById("useToll").checked) {
-                  const route = document.getElementById("tollRoute").value;
-                  tollCost = tollPrices[route] || 0;
-                }
-
-
-                // Jika PP dicentang, kalikan biaya BBM dan tol dengan 2
-                if (document.getElementById("roundTrip").checked) {
-                    fuelCost *= 2;
-                    tollCost *= 2;
-                }
-
-                // Total biaya
-                const totalCost = fuelCost + carCost + driverCost + driverStayCost + driverMealCost + tollCost;
-
-                // Hitung harga agent (markup 10%)
-                const agentPrice = totalCost * 1.1;
-
-                // Total biaya untuk customer (termasuk 20% markup)
-                const customerPrice = totalCost * 1.2;
-
-                // Menggunakan reverse geocoding untuk mendapatkan nama titik awal dan tujuan
-                L.Control.Geocoder.nominatim().reverse(markers[0].getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
-                    document.getElementById("startPointResult").innerText = results[0]?.name || "Titik Awal Tidak Diketahui";
-                });
-
-                L.Control.Geocoder.nominatim().reverse(markers[1].getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
-                    document.getElementById("endPointResult").innerText = results[0]?.name || "Tujuan Tidak Diketahui";
-                });
-
-                // Menampilkan hasil
-                document.getElementById("rentalDurationResult").innerText = `${rentalDays} hari`;
-                document.getElementById("distanceResult").innerText = `${Math.round(distance).toLocaleString('id-ID')} km`;
-                document.getElementById("fuelConsumptionResult").innerText = `${Math.round(fuelConsumption).toLocaleString('id-ID')} L`;
-                document.getElementById("fuelCostResult").innerText = `Rp ${fuelCost.toLocaleString('id-ID')}`;
-                document.getElementById("carTypeResult").innerText = carType;
-                document.getElementById("carCostResult").innerText = `Rp ${carCost.toLocaleString('id-ID')}`;
-                document.getElementById("driverCostResult").innerText = `Rp ${driverCost.toLocaleString('id-ID')}`;
-                document.getElementById("driverStayCostResult").innerText = `Rp ${driverStayCost.toLocaleString('id-ID')}`;
-                document.getElementById("driverMealCostResult").innerText = `Rp ${driverMealCost.toLocaleString('id-ID')}`;
-                document.getElementById("tollCostResult").innerText = `Rp ${tollCost.toLocaleString('id-ID')}`;
-                document.getElementById("totalCostResult").innerText = `Rp ${totalCost.toLocaleString('id-ID')}`;
-                document.getElementById("result").style.display = "block"; // Tampilkan hasil
-                document.getElementById("agentPriceResult").innerText = `Rp ${agentPrice.toLocaleString('id-ID')}`; // Harga agent
-                document.getElementById("customerPriceResult").innerText = `Rp ${customerPrice.toLocaleString('id-ID')}`;
-            });
-        }
+    function calcDriverCost(dist) {
+      if (dist < 30) return 200000;
+      if (dist <= 500) return 300000;
+      if (dist <= 600) return 400000;
+      return 500000;
     }
-}
 
+    function rp(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
 
-        // Menambahkan kontrol pencarian untuk titik 1
-        const geocoder1 = L.Control.geocoder({
-            defaultMarkGeocode: false
-        }).on('markgeocode', function(e) {
-            const latlng = e.geocode.center;
-            map.setView(latlng, 13);
-            addMarkerAndRoute(latlng);
+    function addMarkerAndRoute(latlng) {
+      if (markers.length >= 2) return;
+      const marker = L.marker(latlng).addTo(map);
+      markers.push(marker);
+
+      if (markers.length === 2) {
+        if (routingControl) map.removeControl(routingControl);
+        routingControl = L.Routing.control({
+          waypoints: [markers[0].getLatLng(), markers[1].getLatLng()],
+          routeWhileDragging: false,
+          createMarker: () => null,
+          lineOptions: { styles: [{ color: '#0ea5e9', weight: 4, opacity: 0.85 }] }
         }).addTo(map);
 
-        // Menambahkan kontrol pencarian untuk titik 2
-        const geocoder2 = L.Control.geocoder({
-            defaultMarkGeocode: false
-        }).on('markgeocode', function(e) {
-            const latlng = e.geocode.center;
-            map.setView(latlng, 13);
-            addMarkerAndRoute(latlng);
-        }).addTo(map);
+        routingControl.on('routesfound', function(e) {
+          const distance = e.routes[0].summary.totalDistance / 1000;
+          const fuelRatio = parseInt(document.getElementById('fuelRatio').value);
+          const fuelType  = document.getElementById('fuelType').value;
+          const carType   = document.getElementById('carType').value;
+          const s = new Date(document.getElementById('startDate').value);
+          const en = new Date(document.getElementById('endDate').value);
+          const days = (isNaN(s) || isNaN(en)) ? 1 : Math.ceil((en - s) / 86400000) + 1;
 
-        // Event listener untuk tombol hitung
-        document.getElementById("calculateDistance").addEventListener("click", function() {
-            resetMap();
-            L.DomUtil.get('map').style.height = '500px'; // Reset height of the map
+          let fuelCons = distance / fuelRatio;
+          let fuelCost = fuelCons * fuelPrices[fuelType];
+          let carCost  = carPrices[carType] * days;
+          let driverCost = 0, driverStay = 0, driverMeal = 0, tollCost = 0;
+
+          if (document.getElementById('useDriver').checked) {
+            driverCost = calcDriverCost(distance) * days;
+            if (days > 1) driverStay = driverStayPerDay * (days - 1);
+            driverMeal = driverMealPerDay * days;
+          }
+
+          if (document.getElementById('useToll').checked) {
+            const route = document.getElementById('tollRoute').value;
+            tollCost = tollPrices[route] || 0;
+          }
+
+          if (document.getElementById('roundTrip').checked) { fuelCost *= 2; tollCost *= 2; }
+
+          const total    = fuelCost + carCost + driverCost + driverStay + driverMeal + tollCost;
+          const agentP   = total * 1.1;
+          const custP    = total * 1.2;
+
+          // Reverse geocode
+          L.Control.Geocoder.nominatim().reverse(markers[0].getLatLng(), map.options.crs.scale(map.getZoom()), r => {
+            document.getElementById('startPointResult').innerText = r[0]?.name || 'Tidak Diketahui';
+          });
+          L.Control.Geocoder.nominatim().reverse(markers[1].getLatLng(), map.options.crs.scale(map.getZoom()), r => {
+            document.getElementById('endPointResult').innerText = r[0]?.name || 'Tidak Diketahui';
+          });
+
+          document.getElementById('rentalDurationResult').innerText   = `${days} hari`;
+          document.getElementById('distanceResult').innerText         = `${Math.round(distance).toLocaleString('id-ID')} km`;
+          document.getElementById('fuelConsumptionResult').innerText  = `${Math.round(fuelCons).toLocaleString('id-ID')} L`;
+          document.getElementById('fuelCostResult').innerText         = rp(fuelCost);
+          document.getElementById('carTypeResult').innerText          = carLabels[carType];
+          document.getElementById('carCostResult').innerText          = rp(carCost);
+          document.getElementById('driverCostResult').innerText       = rp(driverCost);
+          document.getElementById('driverStayCostResult').innerText   = rp(driverStay);
+          document.getElementById('driverMealCostResult').innerText   = rp(driverMeal);
+          document.getElementById('tollCostResult').innerText         = rp(tollCost);
+          document.getElementById('totalCostResult').innerText        = rp(total);
+          document.getElementById('agentPriceResult').innerText       = rp(agentP);
+          document.getElementById('customerPriceResult').innerText    = rp(custP);
+
+          // Show result + WA button with animation
+          const resultEl = document.getElementById('result');
+          resultEl.classList.remove('hidden');
+          resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          document.getElementById('sendWhatsApp').classList.remove('hidden');
+          document.getElementById('sendWhatsApp').classList.add('flex');
+          AOS.refresh();
         });
+      }
+    }
 
-        function resetMap() {
-            markers.forEach(marker => map.removeLayer(marker));
-            markers = [];
-            if (routingControl) {
-                map.removeControl(routingControl);
-                routingControl = null;
-            }
-            document.getElementById("result").style.display = "none";
-        }
+    // Geocoder controls
+    L.Control.geocoder({ defaultMarkGeocode: false })
+      .on('markgeocode', e => { map.setView(e.geocode.center, 13); addMarkerAndRoute(e.geocode.center); })
+      .addTo(map);
+    L.Control.geocoder({ defaultMarkGeocode: false, position: 'topleft' })
+      .on('markgeocode', e => { map.setView(e.geocode.center, 13); addMarkerAndRoute(e.geocode.center); })
+      .addTo(map);
 
-                // Geocode untuk Titik Awal dan Tujuan
-        L.Control.Geocoder.nominatim().reverse(markers[0].getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
-            document.getElementById("startPointResult").innerText = results[0].name || "Titik Awal Tidak Diketahui";
-        });
+    // Reset + recalculate
+    document.getElementById('calculateDistance').addEventListener('click', function() {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+      if (routingControl) { map.removeControl(routingControl); routingControl = null; }
+      document.getElementById('result').classList.add('hidden');
+      document.getElementById('sendWhatsApp').classList.add('hidden');
+    });
 
-        L.Control.Geocoder.nominatim().reverse(markers[1].getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
-            document.getElementById("endPointResult").innerText = results[0].name || "Tujuan Tidak Diketahui";
-        });
+    // WhatsApp
+    document.getElementById('sendWhatsApp').addEventListener('click', function() {
+      const sd   = document.getElementById('startDate').value;
+      const ed   = document.getElementById('endDate').value;
+      const sp   = document.getElementById('startPointResult').innerText;
+      const ep   = document.getElementById('endPointResult').innerText;
+      const ct   = document.getElementById('carTypeResult').innerText;
+      const drv  = document.getElementById('useDriver').checked ? 'Ya' : 'Tidak';
+      const tol  = document.getElementById('useToll').checked ? 'Ya' : 'Tidak';
+      const tot  = document.getElementById('totalCostResult').innerText;
+      const fuel = document.getElementById('fuelType').value;
 
-        // Event listener untuk tombol kirim penawaran ke WA
-document.getElementById("sendWhatsApp").addEventListener("click", function() {
-    const startDate = document.getElementById("startDate").value;
-    const endDate = document.getElementById("endDate").value;
-    const startPoint = document.getElementById("startPointResult").innerText;
-    const endPoint = document.getElementById("endPointResult").innerText;
-    const carType = document.getElementById("carType").value;
-    const useDriver = document.getElementById("useDriver").checked ? "Ya" : "Tidak";
-    const useToll = document.getElementById("useToll").checked ? "Ya" : "Tidak";
-    const roundTrip = document.getElementById("roundTrip").checked ? "Ya" : "Tidak";
-    const totalCost = document.getElementById("totalCostResult").innerText;
+      const msg =
+        `Hallo Admin Asrent,\n` +
+        `Berikut penawaran sewa kendaraan yang kami butuhkan:\n\n` +
+        `📅 Tanggal  : ${sd} – ${ed}\n` +
+        `📍 Rute     : ${sp} → ${ep}\n` +
+        `🚗 Kendaraan: ${ct}\n` +
+        `👤 Driver   : ${drv}\n` +
+        `⛽ BBM      : ${fuel}\n` +
+        `🛣️ Tol      : ${tol}\n\n` +
+        `💰 Estimasi Total: ${tot}\n\n` +
+        `Mohon konfirmasi ketersediaan. Terima kasih!`;
 
-    const message = `Hallo Admin Asrent,\n` +
-                    `Berikut kami sampaikan penawaran harga sewa mobil yang kami butuhkan:\n\n` +
-                    `Tanggal: ${startDate} - ${endDate}\n` +
-                    `Tujuan: ${startPoint} - ${endPoint}\n` +
-                    `Mobil: ${carType}\n` +
-                    `Include:\n` +
-                    `- Driver: ${useDriver}\n` +
-                    `- BBM: ${document.getElementById("fuelType").value}\n` +
-                    `- Inap Driver: ${useDriver}\n` +
-                    `- Tol: ${useToll}\n\n` +
-                    `Harga: ${totalCost}`;
-
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-    
-    window.open(whatsappUrl, '_blank');
-});
-
-// Tampilkan tombol kirim penawaran setelah hasil ditampilkan
-document.getElementById("result").style.display = "block"; // Tampilkan hasil
-document.getElementById("sendWhatsApp").style.display = "block"; // Tampilkan tombol kirim WA
-
-    </script>
-    <footer class="footer text-center">
-        <div class="container">
-            <p class="text-light">Copyright &copy; 2024 Created by Asrimotor</p>
-        </div>
-    </footer>
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    });
+  </script>
 </body>
 </html>
-
-
-
-
-
