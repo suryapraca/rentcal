@@ -216,6 +216,8 @@
               <select id="fuelType" class="form-field pr-8">
                 <option value="pertalite">Pertalite — Rp 10.000/Liter</option>
                 <option value="biosolar">Biosolar — Rp 6.800/Liter</option>
+                <option value="pertamax">Pertamax — Rp 16.250/Liter</option>
+                <option value="dexlite">Dexlite — Rp 23.000/Liter</option>
               </select>
             </div>
           </div>
@@ -444,7 +446,7 @@
 
     let markers = [], routingControl = null;
 
-    const fuelPrices = { pertalite: 10000, biosolar: 6800 };
+    const fuelPrices = { pertalite: 10000, biosolar: 6800, pertamax: 16250, dexlite: 23000 };
     const carPrices  = { innovaReborn24: 500000, innovaZenix20: 550000, hiacePremio28: 900000, avanza: 350000 };
     const carLabels  = { innovaReborn24: 'Innova Reborn Diesel 2400cc', innovaZenix20: 'Innova Zenix Gasoline 2000cc', hiacePremio28: 'Hiace Premio 2800cc', avanza: 'All New Avanza 1500cc' };
     const driverStayPerDay = 150000, driverMealPerDay = 50000;
