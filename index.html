@@ -202,10 +202,10 @@
             <label class="block text-gray-500 text-xs font-medium mb-1.5">Jenis Kendaraan</label>
             <div class="select-wrap">
               <select id="carType" class="form-field pr-8">
-                <option value="innovaReborn24">Innova Reborn Diesel 2400cc — Rp 500.000/hari</option>
-                <option value="innovaZenix20">Innova Zenix Gasoline 2000cc — Rp 550.000/hari</option>
-                <option value="hiacePremio28">Hiace Premio 2800cc — Rp 900.000/hari</option>
-                <option value="avanza">All New Avanza 1500cc — Rp 350.000/hari</option>
+                <option value="innovaReborn24">Innova Reborn Diesel 2400cc — Rp 550.000/hari</option>
+                <option value="innovaZenix20">Innova Zenix Gasoline 2000cc — Rp 600.000/hari</option>
+                <option value="hiacePremio28">Hiace Premio 2800cc — Rp 1.000.000/hari</option>
+                <option value="avanza">All New Avanza 1500cc — Rp 400.000/hari</option>
               </select>
             </div>
           </div>
@@ -447,15 +447,15 @@
     let markers = [], routingControl = null;
 
     const fuelPrices = { pertalite: 10000, biosolar: 6800, pertamax: 16250, dexlite: 19700 };
-    const carPrices  = { innovaReborn24: 500000, innovaZenix20: 550000, hiacePremio28: 900000, avanza: 350000 };
+    const carPrices  = { innovaReborn24: 550000, innovaZenix20: 600000, hiacePremio28: 1000000, avanza: 400000 };
     const carLabels  = { innovaReborn24: 'Innova Reborn Diesel 2400cc', innovaZenix20: 'Innova Zenix Gasoline 2000cc', hiacePremio28: 'Hiace Premio 2800cc', avanza: 'All New Avanza 1500cc' };
     const driverStayPerDay = 150000, driverMealPerDay = 50000;
     const tollPrices = {
-      'surabaya-gempol':10000,'surabaya-mojokerto':43500,'surabaya-pandaan':24500,
-      'surabaya-malang':57000,'surabaya-gending':50000,'surabaya-probolinggo-barat':90500,
-      'surabaya-probolinggo-timur':104500,'surabaya-tongas':81500,'surabaya-kertosono':98500,
-      'surabaya-ngawi':202000,'surabaya-solo':320500,'surabaya-jogja':370000,
-      'surabaya-semarang':406000,'surabaya-salatiga':401000,'surabaya-tegal':522500,
+      'surabaya-gempol':10000,'surabaya-mojokerto':43500,'surabaya-pandaan':34500,
+      'surabaya-malang':74500,'surabaya-gending':116500,'surabaya-probolinggo-barat':90500,
+      'surabaya-probolinggo-timur':104500,'surabaya-tongas':90500,'surabaya-kertosono':98500,
+      'surabaya-ngawi':202000,'surabaya-solo':327500,'surabaya-jogja':370000,
+      'surabaya-semarang':425000,'surabaya-salatiga':401000,'surabaya-tegal':522500,
       'surabaya-bandung':890000,'surabaya-jakarta':883500
     };
 
